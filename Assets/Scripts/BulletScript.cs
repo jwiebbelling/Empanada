@@ -4,15 +4,22 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public float sceneradius = 15;
     void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        if (transform.position.x < -sceneradius || transform.position.y < -sceneradius)
+        {
+            Destroy(gameObject);
+        }
+        if (transform.position.x > sceneradius || transform.position.y > sceneradius)
+        {
+            Destroy(gameObject);
+        }
+
     }
 }

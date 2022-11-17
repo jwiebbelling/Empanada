@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 84263e7bb66e69b469aec03861e4f61b
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Thin Pixe-l7
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 4455444363f36d948b3acc2bbb523692, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -16,10 +16,12 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         Jump();
+
         Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
         transform.position += movement * Time.deltaTime * moveSpeed;
+
         if (Input.GetMouseButtonDown(0)) {
-            Instantiate(bullet, muzzle.transform).GetComponent<Rigidbody2D>().AddForce(muzzle.transform.position * -10, ForceMode2D.Impulse);
+            Instantiate(bullet, muzzle.transform).GetComponent<Rigidbody2D>().AddForce(muzzle.transform.position * -5, ForceMode2D.Impulse);
         }
     }
     void Jump()
