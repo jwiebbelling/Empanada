@@ -4,22 +4,17 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    public float sceneradius = 15;
+    public float speed = 15f;
+    public float lifetime = 3;
     void Start()
     {
-
+        Destroy(gameObject, lifetime);
     }
 
     void Update()
     {
-        if (transform.position.x < -sceneradius || transform.position.y < -sceneradius)
-        {
-            Destroy(gameObject);
-        }
-        if (transform.position.x > sceneradius || transform.position.y > sceneradius)
-        {
-            Destroy(gameObject);
-        }
+        float dirX = Input.GetAxis("Horizontal");
+        transform.Translate(transform.right * dirX * speed * Time.deltaTime);
 
     }
 }

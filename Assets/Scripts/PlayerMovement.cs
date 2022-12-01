@@ -4,31 +4,99 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
+    private Rigidbody2D rb;
+    private BoxCollider2D coll;
+    private SpriteRenderer sprite;
+    private Animator anim;
+
+    [SerializeField] private LayerMask jumpableGround;
+
+    private float dirX = 0f;
+    [SerializeField] private float moveSpeed = 7f;
+    [SerializeField] private float jumpForce = 14f;
+
+    private enum MovementState { idle, running, jumping, falling }
+
+    [SerializeField] private AudioSource jumpSoundEffect;
+
+
     public GameObject bullet;
+
+    public float facingDirX = 1;
+
     public GameObject muzzle;
+    public int jumpAmount = 1;
+    private float facing = 1;
+    public bool onGround = false;
+
 
     void Start()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
+        coll = GetComponent<BoxCollider2D>();
+        sprite = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
     {
-        Jump();
+        dirX = Input.GetAxisRaw("Horizontal");
+        rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
 
-        Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
-        transform.position += movement * Time.deltaTime * moveSpeed;
-
-        if (Input.GetMouseButtonDown(0)) {
-            Instantiate(bullet, muzzle.transform).GetComponent<Rigidbody2D>().AddForce(muzzle.transform.position * -5, ForceMode2D.Impulse);
-        }
-    }
-    void Jump()
-    {
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && IsGrounded())
         {
-            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, 5f), ForceMode2D.Impulse);
+            jumpSoundEffect.Play();
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
+
+        UpdateAnimationState();
+    }
+    private void UpdateAnimationState()
+    {
+        MovementState state;
+
+        if (dirX > 0f)
+        {
+            state = MovementState.running;
+            sprite.flipX = false;
+        }
+        else if (dirX < 0f)
+        {
+            state = MovementState.running;
+            sprite.flipX = true;
+        }
+        else
+        {
+            state = MovementState.idle;
+        }
+
+        if (rb.velocity.y > .1f)
+        {
+            state = MovementState.jumping;
+        }
+        else if (rb.velocity.y < -.1f)
+        {
+            state = MovementState.falling;
+        }
+
+        anim.SetInteger("state", (int)state);
+    }
+
+    private bool IsGrounded()
+    {
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
+    }
+    private void FixedUpdate()
+    {
+        float dirX = Input.GetAxisRaw("Horizontal");
+        transform.Translate(transform.right * dirX * moveSpeed * Time.deltaTime);
+
+        if (dirX < 0 || dirX > 0)
+        {
+            facing = dirX;
+        }
+
+        bool wasGrounded = onGround;
+        onGround = false;
     }
 }
