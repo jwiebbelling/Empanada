@@ -9,11 +9,10 @@ public class PlayerMovement : MonoBehaviour
     private SpriteRenderer sprite;
     private Animator anim;
 
-    [SerializeField] private LayerMask jumpableGround;
 
     private float dirX = 0f;
-    [SerializeField] private float moveSpeed = 7f;
-    [SerializeField] private float jumpForce = 14f;
+    [SerializeField] private float moveSpeed;
+    [SerializeField] private float jumpForce;
 
     private enum MovementState { idle, running, jumping, falling }
 
@@ -26,7 +25,6 @@ public class PlayerMovement : MonoBehaviour
 
     public GameObject muzzle;
     public int jumpAmount = 1;
-    private float facing = 1;
     public bool onGround = false;
 
 
@@ -40,10 +38,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        //moving left and right
         dirX = Input.GetAxisRaw("Horizontal");
         rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
 
-        if (Input.GetButtonDown("Jump") && IsGrounded())
+        //jumping when pressing y
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             jumpSoundEffect.Play();
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
@@ -84,17 +84,12 @@ public class PlayerMovement : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, jumpableGround);
+        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f);
     }
     private void FixedUpdate()
     {
         float dirX = Input.GetAxisRaw("Horizontal");
         transform.Translate(transform.right * dirX * moveSpeed * Time.deltaTime);
-
-        if (dirX < 0 || dirX > 0)
-        {
-            facing = dirX;
-        }
 
         bool wasGrounded = onGround;
         onGround = false;
