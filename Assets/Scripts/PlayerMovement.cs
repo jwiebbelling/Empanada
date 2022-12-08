@@ -49,6 +49,12 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
 
+        //shooting
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Instantiate(bullet, transform.position, Quaternion.identity);
+        }
+
         UpdateAnimationState();
     }
     private void UpdateAnimationState()
