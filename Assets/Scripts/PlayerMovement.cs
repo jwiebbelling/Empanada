@@ -1,103 +1,50 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    private BoxCollider2D coll;
-    private SpriteRenderer sprite;
+    private Rigidbody2D body;
     private Animator anim;
-
-
-    private float dirX = 0f;
-    [SerializeField] private float moveSpeed;
+    [SerializeField] private float speed;
     [SerializeField] private float jumpForce;
 
-    private enum MovementState { idle, running, jumping, falling }
-
-    [SerializeField] private AudioSource jumpSoundEffect;
-
+    [SerializeField] private AudioClip jumpSoundEffect;
 
     public GameObject bullet;
 
-    public float facingDirX = 1;
-
-    public GameObject muzzle;
-    public int jumpAmount = 1;
-    public bool onGround = false;
+    private bool grounded;
 
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        coll = GetComponent<BoxCollider2D>();
-        sprite = GetComponent<SpriteRenderer>();
+        body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
 
     void Update()
     {
         //moving left and right
-        dirX = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(dirX * moveSpeed, rb.velocity.y);
+        float horizontalInput = Input.GetAxis("Horizontal");
+        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
-        //jumping when pressing y
-        if (Input.GetKeyDown(KeyCode.Y))
+        //Flip player when facing left/right.
+        if (horizontalInput > 0.01f)
+            transform.localScale = Vector3.one;
+        else if (horizontalInput < -0.01f)
+            transform.localScale = new Vector3(-1, 1, 1);
+
+        if (Input.GetKeyDown(KeyCode.Y) && grounded)
         {
-            jumpSoundEffect.Play();
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            body.velocity = new Vector2(body.velocity.x, speed);
+            anim.SetTrigger("jump");
+            grounded = false;
         }
 
-        //shooting
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Instantiate(bullet, transform.position, Quaternion.identity);
-        }
-
-        UpdateAnimationState();
+        anim.SetBool("running", horizontalInput != 0);
+        anim.SetBool("grounded", grounded);
     }
-    private void UpdateAnimationState()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        MovementState state;
-
-        if (dirX > 0f)
-        {
-            state = MovementState.running;
-            sprite.flipX = false;
-        }
-        else if (dirX < 0f)
-        {
-            state = MovementState.running;
-            sprite.flipX = true;
-        }
-        else
-        {
-            state = MovementState.idle;
-        }
-
-        if (rb.velocity.y > .1f)
-        {
-            state = MovementState.jumping;
-        }
-        else if (rb.velocity.y < -.1f)
-        {
-            state = MovementState.falling;
-        }
-
-        anim.SetInteger("state", (int)state);
-    }
-
-    private bool IsGrounded()
-    {
-        return Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f);
-    }
-    private void FixedUpdate()
-    {
-        float dirX = Input.GetAxisRaw("Horizontal");
-        transform.Translate(transform.right * dirX * moveSpeed * Time.deltaTime);
-
-        bool wasGrounded = onGround;
-        onGround = false;
+        if (collision.gameObject.tag == "Ground")
+            grounded = true;
     }
 }
