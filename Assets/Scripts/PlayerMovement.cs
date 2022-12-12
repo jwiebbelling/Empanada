@@ -2,15 +2,13 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpPower;
+    [SerializeField] private LayerMask groundLayer;
     private Rigidbody2D body;
     private Animator anim;
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpForce;
-
-    [SerializeField] private AudioClip jumpSoundEffect;
-
-    public GameObject bullet;
-
+    private BoxCollider2D boxCollider;
+    private float horizontalInput;
     private bool grounded;
 
 
@@ -18,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -31,6 +30,9 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = Vector3.one;
         else if (horizontalInput < -0.01f)
             transform.localScale = new Vector3(-1, 1, 1);
+
+        anim.SetBool("running", horizontalInput != 0);
+        anim.SetBool("grounded", grounded);
 
         if (Input.GetKeyDown(KeyCode.Y) && grounded)
         {
