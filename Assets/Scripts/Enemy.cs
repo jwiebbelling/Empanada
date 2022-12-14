@@ -6,11 +6,7 @@ public class Enemy : MonoBehaviour
 {
     float dirx = 1f;
     public float speed = 10f;
-
-    void Start()
-    {
-        //int hp = 2;
-    }
+    int hp = 2;
 
     void Update()
     {
@@ -22,18 +18,19 @@ public class Enemy : MonoBehaviour
             dirx *= -1f;
         }
     }
-    public void TakeDamage()
+    public void TakeDamage(int damage)
     {
-        // hp--; if (hit.collider.CompareTag("Player"))
-        //{
-            //kill player
-        //}
+        hp -= damage;
+        
+        if (hp <= 0)
+        {
+            Die();
+        }
 
 
     }
     void Die()
     {
-        //bool isALive = false;
-       // Anim.SetBool("isAlive", isALive);
+        Destroy(gameObject);
     }
 }
