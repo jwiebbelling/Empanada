@@ -4,20 +4,30 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
+    float dirx = 1f;
+    public float speed = 10f;
+
     void Start()
     {
         //int hp = 2;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        
+        transform.Translate(transform.right * dirx * speed * Time.deltaTime);
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right *dirx, 0.5f);
+
+        if (hit.collider != null)
+        {
+            dirx *= -1f;
+        }
     }
     public void TakeDamage()
     {
-       // hp--;
+        // hp--; if (hit.collider.CompareTag("Player"))
+        //{
+            //kill player
+        //}
 
 
     }

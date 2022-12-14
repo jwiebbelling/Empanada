@@ -2,21 +2,20 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private float jumpPower;
-    [SerializeField] private LayerMask groundLayer;
+    public float speed;
+    public float jumpPower;
+    public LayerMask groundLayer;
     private Rigidbody2D body;
     private Animator anim;
-    private BoxCollider2D boxCollider;
-    private float horizontalInput;
     private bool grounded;
+    public GameObject bullet;
+    private float facingDirX = 1f;
 
 
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        boxCollider = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -25,13 +24,20 @@ public class PlayerMovement : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
+        //save direction to use later in bullet
+        float dirx = Input.GetAxisRaw("Horizontal");
+        transform.Translate(transform.right * dirx * speed * Time.deltaTime);
+        if (dirx != 0)
+        {
+            facingDirX = dirx;
+        }
         //Flip player when facing left/right.
         if (horizontalInput > 0.01f)
             transform.localScale = Vector3.one;
         else if (horizontalInput < -0.01f)
             transform.localScale = new Vector3(-1, 1, 1);
 
-        anim.SetBool("running", horizontalInput != 0);
+        anim.SetBool("running", dirx != 0);
         anim.SetBool("grounded", grounded);
 
         if (Input.GetKeyDown(KeyCode.Y) && grounded)
@@ -41,8 +47,12 @@ public class PlayerMovement : MonoBehaviour
             grounded = false;
         }
 
-        anim.SetBool("running", horizontalInput != 0);
-        anim.SetBool("grounded", grounded);
+        
+        if (Input.GetButtonDown("Fire1"))
+        {
+            GameObject Bullet = Instantiate(bullet, transform.position, Quaternion.identity);
+            Bullet.GetComponent<BulletScript>().dirx = facingDirX;
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
