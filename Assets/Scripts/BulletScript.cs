@@ -19,5 +19,8 @@ public class BulletScript : MonoBehaviour
             enemy.TakeDamage(1);
         }
         Destroy(gameObject, lifeTime);
-    }
+
+        if (collision.gameObject.CompareTag("Ground"))
+        Destroy(gameObject);
+        }
 }
