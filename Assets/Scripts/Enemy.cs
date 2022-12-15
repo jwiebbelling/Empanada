@@ -9,14 +9,24 @@ public class Enemy : MonoBehaviour
     public float speed = 10f;
     int hp = 2;
     int enemyDead;
-    [SerializeField] private Text pointsText;
+    
     public GameObject enemyPrefab;
+    [SerializeField] private Text pointsText;
     [SerializeField] private AudioSource enemyScreaming;
+    private Animator anim;
+
+    private void Start()
+    {
+        if (pointsText == null)
+        {
+            pointsText = GameObject.FindGameObjectWithTag("PointsText").GetComponent<Text>();
+        }
+        anim = GetComponent<Animator>();
+    }
 
     void Update()
     {
-        //ask Jorrit to help with sounds
-        //add text to prefab, how???
+        //ask Jorrit to help with sounds == make animation play sound, not the enemy
         transform.Translate(transform.right * dirx * speed * Time.deltaTime);
         RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.right *dirx, 0.4f);
 
@@ -38,16 +48,30 @@ public class Enemy : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Trap"))
         {
-            enemyScreaming.Play();
-            Destroy(gameObject);
+            GetComponent<Collider2D>().enabled = false;
+            anim.SetTrigger("enemypoof");
+            anim.Play("enemydie");
             Instantiate(enemyPrefab, new Vector2(16, 0), Quaternion.identity);
         }
     }
     void Die()
     {
-        enemyScreaming.Play();
-        Destroy(gameObject);
+        anim.Play("enemydie");
+        anim.SetTrigger("enemypoof");
         enemyDead++;
         pointsText.text = "Points: " + enemyDead;
+    }
+    void Scream()
+    {
+        enemyScreaming.Play();
+
+        if (enemyScreaming == null)
+        {
+            enemyScreaming = GameObject.FindGameObjectWithTag("Scream").GetComponent<AudioSource>();
+        }
+    }
+    void Destroy()
+    {
+        Destroy(gameObject);
     }
 }

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8916227323864207922}
   - component: {fileID: 1134703544124288742}
   - component: {fileID: 1525227846170377584}
+  - component: {fileID: 2164934745006611159}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Enemy
@@ -148,8 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  pointsText: {fileID: 0}
   enemyPrefab: {fileID: 1078110015067520654}
+  pointsText: {fileID: 0}
   enemyScreaming: {fileID: 1525227846170377584}
 --- !u!82 &1525227846170377584
 AudioSource:
@@ -247,3 +248,23 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!95 &2164934745006611159
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1078110015067520654}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7fe5c956a55272740b797594edecb99f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

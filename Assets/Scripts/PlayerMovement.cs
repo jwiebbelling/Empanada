@@ -10,7 +10,8 @@ public class PlayerMovement : MonoBehaviour
     private bool grounded;
     public GameObject bullet;
     private float facingDirX = 1f;
-
+    public AudioSource jumpEffect;
+    public AudioSource shootingSound;
 
     void Start()
     {
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
         {
             facingDirX = dirx;
         }
+
         //Flip player when facing left/right.
         if (horizontalInput > 0.01f)
             transform.localScale = Vector3.one;
@@ -43,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Y) && grounded)
         {
             body.velocity = new Vector2(body.velocity.x, speed);
+            jumpEffect.Play();
             anim.SetTrigger("jump");
             grounded = false;
         }
@@ -50,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
         
         if (Input.GetButtonDown("Fire1"))
         {
+            shootingSound.Play();
             GameObject Bullet = Instantiate(bullet, transform.position, Quaternion.identity);
             Bullet.GetComponent<BulletScript>().dirx = facingDirX;
         }
