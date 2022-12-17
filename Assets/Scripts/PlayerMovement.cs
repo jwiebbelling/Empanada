@@ -42,7 +42,7 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("running", dirx != 0);
         anim.SetBool("grounded", grounded);
 
-        if (Input.GetKeyDown(KeyCode.Y) && grounded)
+        if (Input.GetKeyDown("space") && grounded)
         {
             body.velocity = new Vector2(body.velocity.x, speed);
             jumpEffect.Play();
@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             shootingSound.Play();
             GameObject Bullet = Instantiate(bullet, transform.position, Quaternion.identity);
